@@ -1,5 +1,4 @@
 #include "Main.h"
-#include "Windows.h"
 
 const int NUM_TILES = 9 * 9;
 
