@@ -20,7 +20,11 @@ int main(int argc, char** argv)
 		}
 	}
 
-	// Assert valid sudoku puzzle?
+	if (!assertValidPuzzle())
+	{
+		std::cout << std::endl << "This is an invalid sudoku puzzle." << std::endl;
+		exit(-1);
+	}
 
 	// Try to solve the sudoku puzzle
 	bool solved = solveSudoku(0, 0);
@@ -40,10 +44,86 @@ int main(int argc, char** argv)
 	else
 	{
 		std::cout << std::endl << "There is no solution to this sudoku puzzle :(" << std::endl;
+		exit(-1);
 	}
 }
 
+bool assertValidPuzzle()
+{
+	// Check columns are valid
+	for (int x = 0; x < 9; x++)
+	{
+		bool hasNumber[9] = { 0 };
+		
+		for (int y = 0; y < 9; y++)
+		{
+			int num = tiles[x][y];
+			if (num > 0)
+			{
+				if (hasNumber[num - 1])
+				{
+					return false;
+				}
+				else
+				{
+					hasNumber[num - 1] = true;
+				}
+			}
+		}
+	}
 
+	// Check rows are valid
+	for (int y = 0; y < 9; y++)
+	{
+		bool hasNumber[9] = { 0 };
+
+		for (int x = 0; x < 9; x++)
+		{
+			int num = tiles[x][y];
+			if (num > 0)
+			{
+				if (hasNumber[num - 1])
+				{
+					return false;
+				}
+				else
+				{
+					hasNumber[num - 1] = true;
+				}
+			}
+		}
+	}
+
+	// Check blocks/regions are valid
+	for (int xBlock = 0; xBlock < 3; xBlock++)
+	{
+		for (int yBlock = 0; yBlock < 3; yBlock++)
+		{
+			bool hasNumber[9] = { 0 };
+
+			for (int xOffs = 0; xOffs < 3; xOffs++)
+			{
+				for (int yOffs = 0; yOffs < 3; yOffs++)
+				{
+					int num = tiles[xBlock * 3 + xOffs][yBlock * 3 + yOffs];
+					if (num > 0)
+					{
+						if (hasNumber[num - 1])
+						{
+							return false;
+						}
+						else
+						{
+							hasNumber[num - 1] = true;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	return true;
+}
 
 bool solveSudoku(int x, int y)
 {
